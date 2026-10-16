@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Échelle Typo — Modular Scale</title>
+<meta name="description" content="Générateur d'échelle typographique modulaire pour graphistes (print & web). 100 % navigateur.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <div>
+      <h1 data-i18n="title">Échelle Typo</h1>
+      <p class="tagline" data-i18n="tagline">Échelle typographique modulaire — print & web</p>
+    </div>
+  </div>
+  <label class="lang-wrap">
+    <span class="sr-only" data-i18n="langLabel">Langue</span>
+    <select id="lang" aria-label="Langue / Language / Tutlayt">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="kab">Taqbaylit</option>
+    </select>
+  </label>
+</header>
+
+<main class="layout">
+  <!-- Contrôles -->
+  <aside class="panel controls" aria-label="Contrôles">
+    <h2 data-i18n="controls">Réglages</h2>
+
+    <div class="field">
+      <label for="baseSize"><span data-i18n="baseSize">Taille de base</span></label>
+      <div class="inline">
+        <input id="baseSize" type="number" min="6" max="120" step="0.5" value="16">
+        <select id="unit" aria-label="Unité">
+          <option value="px">px</option>
+          <option value="rem">rem</option>
+          <option value="em">em</option>
+          <option value="pt">pt</option>
+        </select>
+      </div>
+      <p class="hint" data-i18n="baseHint">Pour rem/em, 1rem = 16 px (racine).</p>
+    </div>
+
+    <div class="field">
+      <label for="ratio"><span data-i18n="ratio">Ratio</span></label>
+      <select id="ratio">
+        <option value="1.067" data-i18n="rMinor2">Seconde mineure (1.067)</option>
+        <option value="1.125" data-i18n="rMajor2">Seconde majeure (1.125)</option>
+        <option value="1.2" data-i18n="rMinor3">Tierce mineure (1.2)</option>
+        <option value="1.25" selected data-i18n="rMajor3">Tierce majeure (1.25)</option>
+        <option value="1.333" data-i18n="rP4">Quarte juste (1.333)</option>
+        <option value="1.414" data-i18n="rA4">Quarte augmentée (1.414)</option>
+        <option value="1.5" data-i18n="rP5">Quinte juste (1.5)</option>
+        <option value="1.618" data-i18n="rGold">Nombre d'or (1.618)</option>
+        <option value="custom" data-i18n="rCustom">Personnalisé…</option>
+      </select>
+      <input id="customRatio" type="number" min="1.01" max="3" step="0.001" value="1.25" hidden>
+    </div>
+
+    <div class="field dual">
+      <div>
+        <label for="stepsBelow"><span data-i18n="stepsBelow">Échelons sous la base</span></label>
+        <input id="stepsBelow" type="number" min="0" max="8" value="3">
+      </div>
+      <div>
+        <label for="stepsAbove"><span data-i18n="stepsAbove">Échelons au-dessus</span></label>
+        <input id="stepsAbove" type="number" min="0" max="12" value="5">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="baseline"><span data-i18n="baseline">Unité de ligne de base (px)</span></label>
+      <input id="baseline" type="number" min="2" max="24" step="0.5" value="8">
+      <p class="hint" data-i18n="baselineHint">Les interlignes s’accrochent aux multiples de cette unité.</p>
+    </div>
+
+    <div class="field">
+      <label for="pageWidth"><span data-i18n="pageWidth">Largeur de page (aperçu)</span></label>
+      <select id="pageWidth">
+        <option value="auto" data-i18n="pwAuto">Auto (plein)</option>
+        <option value="a4" selected>A4 (210 mm ≈ 794 px)</option>
+        <option value="letter">Letter (8.5″ ≈ 816 px)</option>
+        <option value="custom" data-i18n="pwCustom">Personnalisée…</option>
+      </select>
+      <input id="customWidth" type="number" min="200" max="1600" step="10" value="600" hidden>
+    </div>
+
+    <div class="field dual">
+      <div>
+        <label for="fgColor"><span data-i18n="fgColor">Texte</span></label>
+        <input id="fgColor" type="color" value="#1c1410">
+      </div>
+      <div>
+        <label for="bgColor"><span data-i18n="bgColor">Fond</span></label>
+        <input id="bgColor" type="color" value="#f4ead8">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="sampleText"><span data-i18n="sampleText">Texte d’exemple</span></label>
+      <textarea id="sampleText" rows="3" spellcheck="false"></textarea>
+    </div>
+
+    <div class="export-row">
+      <button type="button" id="copyCss" class="btn primary" data-i18n="copyCss">Copier CSS</button>
+      <button type="button" id="copyJson" class="btn" data-i18n="copyJson">Copier JSON</button>
+      <button type="button" id="dlCss" class="btn" data-i18n="dlCss">Télécharger .css</button>
+      <button type="button" id="dlPng" class="btn" data-i18n="dlPng">PNG aperçu</button>
+    </div>
+  </aside>
+
+  <!-- Tableau + aperçu -->
+  <section class="panel results">
+    <h2 data-i18n="scaleTitle">Échelle</h2>
+    <div class="table-wrap">
+      <table id="scaleTable">
+        <thead>
+          <tr>
+            <th data-i18n="colStep">Échelon</th>
+            <th data-i18n="colName">Nom</th>
+            <th data-i18n="colSize">Taille</th>
+            <th data-i18n="colPx">Équiv. px</th>
+            <th data-i18n="colLh">Interligne</th>
+            <th data-i18n="colRatioLh">× base</th>
+          </tr>
+        </thead>
+        <tbody id="scaleBody"></tbody>
+      </table>
+    </div>
+
+    <h2 data-i18n="previewTitle">Aperçu</h2>
+    <div id="previewFrame" class="preview-frame">
+      <div id="preview" class="preview"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span data-i18n="footer">Échelle Typo — outil gratuit, 100 % navigateur</span>
+  · MIT ·
+  <a href="https://github.com/salimadour31-boop/echelle-typo">GitHub</a>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
